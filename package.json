@@ -1,0 +1,22 @@
+{
+  "name": "dyndns53",
+  "version": "1.0.0",
+  "description": "Dynamically set IP addresses in Route53",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/hanshuebner/dyndns53.git"
+  },
+  "author": "Hans Hübner",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hanshuebner/dyndns53/issues"
+  },
+  "homepage": "https://github.com/hanshuebner/dyndns53#readme",
+  "dependencies": {
+    "aws-sdk": "^2.751.0"
+  }
+}

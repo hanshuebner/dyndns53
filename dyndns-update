@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# CGI script to update DDNS entries
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/root/bin
+
+cd /home/hans/dyndns53
+node index.js

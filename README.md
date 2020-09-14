@@ -23,3 +23,17 @@ password.  Each host needs to be configured in the `config.js` file
 
 This is designed to be a low-security system as the passwords are
 stored in plain text.
+
+## Testing
+
+To test your config.js on the command line, you could run the script
+in the shell like so:
+
+    env REMOTE_ADDR=127.0.0.1 'QUERY_STRING=host=bonnie&password=secret' node index.js
+
+If everything is configured correctly and a host "bonnie" with the
+password "secret" exists, this should print
+
+    Content-Type: text/plain
+
+    IP address for bonnie.example.com set to 127.0.0.1

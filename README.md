@@ -14,6 +14,9 @@ The provided [`dyndns-update` CGI frontend shell
 script](dyndns-update) will need to be adapted to the needs of the
 specific webserver environment.
 
+The address that is registered under the host name is determined by
+the environment variable `REMOTE_ADDR` which is set by the CGI.
+
 The script supports multiple hosts, each protected by a (trivial)
 password.  Each host needs to be configured in the `config.js` file
 [see config-sample.js](config-sample.js).

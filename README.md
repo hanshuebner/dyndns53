@@ -24,7 +24,7 @@ password.  Each host needs to be configured in the `config.js` file
 This is designed to be a low-security system as the passwords are
 stored in plain text.
 
-## IAM role
+## IAM policy
 
 You'll need to set up an IAM user that has access to the Route53 zone
 that you want to update.  As the script is waiting for the change to

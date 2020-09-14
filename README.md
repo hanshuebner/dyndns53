@@ -24,6 +24,34 @@ password.  Each host needs to be configured in the `config.js` file
 This is designed to be a low-security system as the passwords are
 stored in plain text.
 
+## IAM role
+
+You'll need to set up an IAM user that has access to the Route53 zone
+that you want to update.  As the script is waiting for the change to
+be propagated to the DNS server edges, it also needs to be able to
+read change sets in addition to updating them.  Here is the policy
+that I use:
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "route53:GetChange",
+                "route53:ChangeResourceRecordSets"
+            ],
+            "Resource": [
+                "arn:aws:route53:::hostedzone/XXXXXXXXXXXXXXXXXXXXX",
+                "arn:aws:route53:::change/*"
+            ]
+        }
+    ]
+}
+```
+
 ## Testing
 
 To test your config.js on the command line, you could run the script

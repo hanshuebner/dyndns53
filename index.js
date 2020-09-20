@@ -6,14 +6,14 @@ const route53 = new AWS.Route53();
 
 const config = require('./config.js');
 
-const setIpAddress = async (domain, ipAddress) =>
+const setIpAddress = async (HostedZoneId, Name, ipAddress) =>
       (await route53.changeResourceRecordSets({
-          HostedZoneId: config.zoneId,
+          HostedZoneId,
           ChangeBatch: {
               Changes: [{
                   Action: 'UPSERT',
                   ResourceRecordSet: {
-                      Name: domain,
+                      Name,
                       TTL: 60,
                       Type: 'A',
                       ResourceRecords: [
@@ -38,20 +38,20 @@ const checkCompletion = async (Id, resolve) => {
 const waitForChangeCompletion = (Id) =>
     new Promise(resolve => checkCompletion(Id, resolve));
 
-const setIpAddressAndWait = async (domain, ipAddress) =>
-      waitForChangeCompletion(await setIpAddress(domain, ipAddress));
+const setIpAddressAndWait = async (zoneId, domain, ipAddress) =>
+      waitForChangeCompletion(await setIpAddress(zoneId, domain, ipAddress));
 
 const [_, host, password] = process.env.QUERY_STRING.match(/host=(.*)\&password=([^&]+)/);
 
 console.log(`Content-Type: text/plain
 `);
 
-if (config.passwords[host] === password) {
-    const fqdn = `${host}.${config.domain}`;
-    setIpAddressAndWait(fqdn, process.env.REMOTE_ADDR)
-        .then(() => console.log(`IP address for ${fqdn} set to ${process.env.REMOTE_ADDR}`))
+const hostConfig = config[host];
+if (hostConfig && hostConfig.password === password) {
+    setIpAddressAndWait(hostConfig.zoneId, hostConfig.hostname, process.env.REMOTE_ADDR)
+        .then(() => console.log(`IP address for ${hostConfig.hostname} set to ${process.env.REMOTE_ADDR}`))
         .catch((e) => {
-            console.log(`Could not set IP address for ${fqdn} to ${process.env.REMOTE_ADDR}`);
+            console.log(`Could not set IP address for ${hostConfig.hostname} to ${process.env.REMOTE_ADDR}`);
             throw e;
         });
 } else {

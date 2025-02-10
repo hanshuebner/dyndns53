@@ -15,7 +15,7 @@ const setIpAddress = async (HostedZoneId, Name, ipAddress) =>
                   ResourceRecordSet: {
                       Name,
                       TTL: 60,
-                      Type: 'A',
+                      Type: ipAddress.match(/:/) ? 'AAAA' : 'A',
                       ResourceRecords: [
                           {
                               Value: ipAddress
@@ -41,20 +41,33 @@ const waitForChangeCompletion = (Id) =>
 const setIpAddressAndWait = async (zoneId, domain, ipAddress) =>
       waitForChangeCompletion(await setIpAddress(zoneId, domain, ipAddress));
 
-const [_, host, password] = process.env.QUERY_STRING.match(/host=(.*)\&password=([^&]+)/);
+const params = new URLSearchParams(process.env.QUERY_STRING)
+const host = params.get('host')
+const password = params.get('password')
+const ipaddr = params.get('ipaddr')
+const ip6addr = params.get ('ip6addr')
 
 console.log(`Content-Type: text/plain
 `);
 
 const hostConfig = config[host];
 if (hostConfig && hostConfig.password === password) {
-    setIpAddressAndWait(hostConfig.zoneId, hostConfig.hostname, process.env.REMOTE_ADDR)
-        .then(() => console.log(`IP address for ${hostConfig.hostname} set to ${process.env.REMOTE_ADDR}`))
-        .catch((e) => {
-            console.log(`Could not set IP address for ${hostConfig.hostname} to ${process.env.REMOTE_ADDR}`);
-            throw e;
-        });
+    if (ipaddr) {
+        setIpAddressAndWait(hostConfig.zoneId, hostConfig.hostname, ipaddr)
+            .then(() => console.log(`IP address for ${hostConfig.hostname} set to ${ipaddr}`))
+            .catch((e) => {
+                console.log(`Could not set IP address for ${hostConfig.hostname} to ${ipaddr}`);
+                throw e;
+            });
+    }
+    if (ip6addr) {
+        setIpAddressAndWait(hostConfig.zoneId, hostConfig.hostname, ip6addr)
+            .then(() => console.log(`IP address for ${hostConfig.hostname} set to ${ip6addr}`))
+            .catch((e) => {
+                console.log(`Could not set IP address for ${hostConfig.hostname} to ${ip6addr}`);
+                throw e;
+            });
+    }
 } else {
     console.log('no match');
 }
-

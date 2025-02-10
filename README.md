@@ -8,7 +8,7 @@ invoke the CGI script URL as dynamic DNS updater.
 
 The format of the DDNS update URL needs to be:
 
-    https://example.com/cgi-bin/dyndns-update?host=<hostname>&password=<password>
+    https://example.com/cgi-bin/dyndns-update?host=<hostname>&password=<password>&ipaddr=<ipaddr>&ip6addr=<ip6addr>
 
 The provided [`dyndns-update` CGI frontend shell
 script](dyndns-update) will need to be adapted to the needs of the
@@ -57,7 +57,7 @@ that I use:
 To test your config.js on the command line, you could run the script
 in the shell like so:
 
-    env REMOTE_ADDR=127.0.0.1 'QUERY_STRING=host=bonnie&password=secret' node index.js
+    env 'QUERY_STRING=host=bonnie&password=secret&ipaddr=127.0.0.1' node index.js
 
 If everything is configured correctly and a host "bonnie" with the
 password "secret" exists, this should print

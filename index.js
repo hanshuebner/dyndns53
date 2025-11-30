@@ -1,13 +1,13 @@
 
 const process = require('process');
 
-const AWS = require('aws-sdk');
-const route53 = new AWS.Route53();
+const { Route53Client, ChangeResourceRecordSetsCommand, GetChangeCommand } = require('@aws-sdk/client-route-53');
+const route53 = new Route53Client();
 
 const config = require('./config.js');
 
 const setIpAddress = async (HostedZoneId, Name, ipAddress) =>
-      (await route53.changeResourceRecordSets({
+      (await route53.send(new ChangeResourceRecordSetsCommand({
           HostedZoneId,
           ChangeBatch: {
               Changes: [{
@@ -24,10 +24,10 @@ const setIpAddress = async (HostedZoneId, Name, ipAddress) =>
                   }
               }]
           }
-      }).promise()).ChangeInfo.Id;
+      }))).ChangeInfo.Id;
 
 const checkCompletion = async (Id, resolve) => {
-    const status = (await route53.getChange({ Id }).promise()).ChangeInfo.Status;
+    const status = (await route53.send(new GetChangeCommand({ Id }))).ChangeInfo.Status;
     if (status === 'INSYNC') {
         resolve();
     } else {

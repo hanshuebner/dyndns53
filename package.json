@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/hanshuebner/dyndns53#readme",
   "dependencies": {
-    "aws-sdk": "^2.751.0"
+    "@aws-sdk/client-route-53": "^3.700.0",
+    "@aws-sdk/credential-providers": "^3.940.0"
   }
 }
